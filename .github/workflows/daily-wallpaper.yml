@@ -1,0 +1,45 @@
+name: Update iPhone wallpaper
+
+on:
+  schedule:
+    # 毎日04:35 JST（前日の19:35 UTC）
+    - cron: "35 19 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Japanese font and Python packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y fonts-noto-cjk
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Generate today's wallpaper
+        run: python generate_wallpaper.py --output output/latest.png
+
+      - name: Commit updated wallpaper
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add output/latest.png
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "Update daily wallpaper"
+            git push
+          fi
