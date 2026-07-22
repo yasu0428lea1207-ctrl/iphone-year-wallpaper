@@ -110,6 +110,7 @@ def generate(target_date: date, output_path: Path) -> None:
     day_of_year = target_date.timetuple().tm_yday
     remaining_days = total_days - day_of_year
     remaining_weeks = math.ceil(remaining_days / 7)
+    total_weeks = math.ceil((total_days - 1) / 7)
     progress = round(day_of_year / total_days * 100)
 
     img = Image.new("RGB", (WIDTH, HEIGHT), BG)
@@ -129,7 +130,7 @@ def generate(target_date: date, output_path: Path) -> None:
     gap = 8
     grid_width = cols * cell + (cols - 1) * gap
     start_x = (WIDTH - grid_width) // 2
-    start_y = 535
+    start_y = 680
 
     for i in range(total_days):
         row, col = divmod(i, cols)
@@ -162,8 +163,8 @@ def generate(target_date: date, output_path: Path) -> None:
     # Metrics
     draw.line((390, 1945, 390, 2145), fill=MUTED, width=2)
     draw.line((780, 1945, 780, 2145), fill=MUTED, width=2)
-    draw_metric(draw, 245, "残り日数", str(remaining_days), "日")
-    draw_metric(draw, 585, "残り週間", str(remaining_weeks), "週間")
+    draw_metric(draw, 245, "残り日数", f"{remaining_days}/{total_days}", "日")
+    draw_metric(draw, 585, "残り週間", f"{remaining_weeks}/{total_weeks}", "週間")
     draw_metric(draw, 925, "進捗率", str(progress), "%", accent=True)
 
     # Footer
