@@ -3,7 +3,7 @@ name: Update iPhone wallpaper
 on:
   schedule:
     # 毎日04:35 JST（前日の19:35 UTC）
-    - cron: "35 19 * * *"
+    - cron: "17 17 * * *"
   workflow_dispatch:
 
 permissions:
